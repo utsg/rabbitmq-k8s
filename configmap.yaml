@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: kube-rabbitmq
+data:
+  enabled_plugins: |
+    [rabbitmq_peer_discovery_k8s, rabbitmq_management].
+  rabbitmq.conf: |
+    cluster_formation.peer_discovery_backend = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    ## IP-адреса не стабильны, поэтому для типа адреса выбираем hostname
+    cluster_formation.k8s.address_type = hostname
+    cluster_formation.node_cleanup.interval = 30
+    ## Документация: https://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup
+    ## Подразумеваем, что в случае потере ноды, она должна востановится, следовательно нода должна вернутся в кластер без потери своего состояния
+    cluster_formation.node_cleanup.only_log_warning = true
+    ## Документация: https://www.rabbitmq.com/partitions.html
+    ## Отдаем RabbitMQ возможность автоматического востановления разделов
+    cluster_partition_handling = autoheal
+    ## Документация: https://www.rabbitmq.com/ha.html#master-migration-data-locality
+    ## Мастер-нодой будет выбираться нода с наименьшим кол-вом очередей, что позволит равномерно распределять нагрузку по нодам кластера 
+    queue_master_locator=min-masters

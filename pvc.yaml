@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: rabbitmq-data
+  namespace: kube-rabbitmq
+spec:
+  storageClassName: rabbitmq-data-sigma
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi

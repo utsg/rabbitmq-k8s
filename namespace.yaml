@@ -1,0 +1,5 @@
+## Все ресурсы будут размещены в созданном здесь namespace: kube-rabbitmq
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-rabbitmq
